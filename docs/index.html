@@ -1,0 +1,385 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<style>
+  body {
+    padding: 100px;
+    width: 1000px;
+    margin: auto;
+    text-align: left;
+    font-weight: 300;
+    font-family: 'Open Sans', sans-serif;
+    color: #121212;
+  }
+  h1, h2, h3, h4 {
+    font-family: 'Source Sans Pro', sans-serif;
+  }
+</style>
+<title>CS 184 Mesh Editor</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link href="https://fonts.googleapis.com/css?family=Open+Sans|Source+Sans+Pro" rel="stylesheet">
+</head>
+
+
+<body>
+
+<h1 align="middle">CS 184: Computer Graphics and Imaging, Spring 2019</h1>
+<h1 align="middle">Project 2: Mesh Editor</h1>
+<h2 align="middle">Ruta Joshi</h2>
+
+<br><br>
+
+<div>
+
+<p>NOTE: The 'W' hotkey on a Mac coincides with the command key, so I have remapped the GLSL shaders to 'k' and 'K' instead.</p>
+
+<h2 align="middle">Overview</h2>
+<p>In this project, I implemented techniques to render images using the Bezier representations of curves and surfaces. After implementing de Casteljau's algorithm, I learned to implement shading by averaging normals across faces, and then to split and flip edges for the purpose of mesh upsampling. This technique is used to smoothen meshes defined by rough geometries. The overall project was an exercise in understanding and manipulating mesh representations effectively.</p>
+
+<h2 align="middle">Section I: Bezier Curves and Surfaces</h2>
+
+<h3 align="middle">Part 1: Bezier curves with 1D de Casteljau subdivision</h3>
+
+<p>Given a set of control points, de Casteljau's algorithm can be used to find the corresponding Bezier curve. Given n control points and a value t between 0 and 1, the algorithm first finds n-1 points that lie between adjacent pairs of control points. A new point NP(i) = (1-t)*P(i) + t*P(i+1) where P are the control points. The algorithm continues to do this successively until there is only one point left. Doing this as t varies from 0 to 1 produces the corresponding Bezier curve. I implemented this by taking the last computed list of points in the BezierCurve instance and creating the next level by iterating through these points and taking the weighted averages of adjacent points to produce the next level.</p>
+
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="images/part1/a_lev1.png" align="middle" width="400px"/>
+        <figcaption align="middle">L1: Just the control points.</figcaption>
+      </td>
+      <td>
+        <img src="images/part1/a_lev2.png" align="middle" width="400px"/>
+        <figcaption align="middle">L2</figcaption>
+      </td>
+    </tr>
+    <br>
+    <tr>
+      <td>
+        <img src="images/part1/a_lev3.png" align="middle" width="400px"/>
+        <figcaption align="middle">L3</figcaption>
+      </td>
+      <td>
+        <img src="images/part1/a_lev4.png" align="middle" width="400px"/>
+        <figcaption align="middle">L4</figcaption>
+      </td>
+    </tr>
+    <br>
+    <tr>
+      <td>
+        <img src="images/part1/a_lev5.png" align="middle" width="400px"/>
+        <figcaption align="middle">L5</figcaption>
+      </td>
+      <td>
+        <img src="images/part1/a_lev6.png" align="middle" width="400px"/>
+        <figcaption align="middle">L6</figcaption>
+      </td>
+    </tr>
+    <br>
+    <tr>
+      <td>
+        <img src="images/part1/a_lev7.png" align="middle" width="400px"/>
+        <figcaption align="middle">L7: The curve is finished.</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<p>Now we vary t so that it is less than 0.5.</p>
+
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="images/part1/b_lev1.png" align="middle" width="400px"/>
+        <figcaption align="middle">L1: Just the control points.</figcaption>
+      </td>
+      <td>
+        <img src="images/part1/b_lev2.png" align="middle" width="400px"/>
+        <figcaption align="middle">L2</figcaption>
+      </td>
+    </tr>
+    <br>
+    <tr>
+      <td>
+        <img src="images/part1/b_lev3.png" align="middle" width="400px"/>
+        <figcaption align="middle">L3</figcaption>
+      </td>
+      <td>
+        <img src="images/part1/b_lev4.png" align="middle" width="400px"/>
+        <figcaption align="middle">L4</figcaption>
+      </td>
+    </tr>
+    <br>
+    <tr>
+      <td>
+        <img src="images/part1/b_lev5.png" align="middle" width="400px"/>
+        <figcaption align="middle">L5</figcaption>
+      </td>
+      <td>
+        <img src="images/part1/b_lev6.png" align="middle" width="400px"/>
+        <figcaption align="middle">L6</figcaption>
+      </td>
+    </tr>
+    <br>
+    <tr>
+      <td>
+        <img src="images/part1/b_lev7.png" align="middle" width="400px"/>
+        <figcaption align="middle">L7: The curve is finished.</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+
+
+<h3 align="middle">Part 2: Bezier surfaces with separable 1D de Casteljau subdivision</h3>
+
+<p> The algorithm from the previous part (de Casteljau's algorithm) can be extended from curves to surfaces by adding another parameter. Instead of one parameter t, we use two parameters (u, v). Given a 4x4 matrix of points, I used u to find the final points resulting from 1d subdivisions for each row. Then, I used the resulting points from the 4 rows (4 points total) to do more subdivision using v. This procedure is equivalent to evaluating point u on 4 separate bezier curves, and then evaluating point v on the moving curve defined by the u evaluations. The curve is "moving" because the 4 points used to define it change as u varies from 0 to 1. Varying v traces out a surface.</p>
+
+<div>
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="images/part2/teapot.png" align="middle" width="400px"/>
+        <figcaption align="middle">A teapot rendered using this algorithm.</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+
+
+<h2 align="middle">Section II: Sampling</h2>
+
+<h3 align="middle">Part 3: Average normals for half-edge meshes</h3>
+
+<p>To compute the area-weighted average normal vector for each vertex, I found the unnormalized normal vectors for the faces surrounding the vertex and added them together before normalizing. To do this, I started with the halfedge associated with the vertex. Then, treating the vertex as a point A in a triangle ABC, I found a point B by taking the vertex associated with the halfedge's twin. I found C by taking the vertex associated with the twin's next halfedge's twin. Then I computed the edge vectors AB and AC and took their cross product, adding it to a running sum, which I normalized after I had done this for all faces surrounding the vertex.</p>
+
+<div>
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="images/part3/face_normals.png" align="middle" width="400px"/>
+        <figcaption align="middle">Without smoothed normals (using face normals for shading).</figcaption>
+      </td>
+      <td>
+        <img src="images/part3/vertex_normals.png" align="middle" width="400px"/>
+        <figcaption align="middle">With smoothed normals (using vertex normals for shading).</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<h3 align="middle">Part 4: Half-edge flip</h3>
+<p>To implement edge flipping, I retrieved the halfedge associated with the edge that needed to be flipped. Then I retrieved the faces associated with the edge and the halfedges that encircled each of these faces. I then reassigned the next pointers of each halfedge appropriately and reset the faces and vertices associated with each halfedge and the halfedges and vertices associated with each face.</p>
+<p>My eventful debugging journey: After my first implementation, I could flip edges that went across a face once, but subsequent flips led to faces disappearing. I found a way to flip edges until the entire mesh had disappeared. I fixed this by setting the halfedge associated with each face to be one that is not associated with the flipping edge.</p>
+
+<div>
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="images/part4/cube_no_flips.png" align="middle" width="400px"/>
+        <figcaption align="middle">A cube with no edges flipped. (Before)</figcaption>
+      </td>
+      <td>
+        <img src="images/part4/cube_plain_flips.png" align="middle" width="400px"/>
+        <figcaption align="middle">The edge across each face is flipped. (After)</figcaption>
+      </td>
+    </tr>
+    <br>
+    <tr>
+      <td>
+        <img src="images/part4/cube_weird_flips.png" align="middle" width="400px"/>
+        <figcaption align="middle">After some random flipping. (Much After)</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<h3 align="middle">Part 5: Half-edge split</h3>
+<p>To implement the edge split operation, I created a new vertex halfway between the endpoints of the edge. Then I created 4 new edges, leading out from that vertex, 8 halfedges, and 2 new faces. I set the neighbors of all 12 halfedges in the 4 faces appropriately and set the halfedges associated with each face, vertex, and edge. Then I deleted the old edge and the halfedges associated with it.</p>
+<p>My eventful debugging journey: This part did not lead to much debugging, which was nice.</p>
+
+<div>
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="images/part5/before.png" align="middle" width="400px"/>
+        <figcaption align="middle">A cube before any splits. (Before)</figcaption>
+      </td>
+      <td>
+        <img src="images/part5/after_splits.png" align="middle" width="400px"/>
+        <figcaption align="middle">All the cross-face edges have been split. (After)</figcaption>
+      </td>
+    </tr>
+    <br>
+    <tr>
+      <td>
+        <img src="images/part5/after_both.png" align="middle" width="400px"/>
+        <figcaption align="middle">After some random splitting and flipping. (Much After)</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<h3 align="middle">Part 6: Loop subdivision for mesh upsampling</h3>
+
+<p>To implement loop subdivision for mesh upsampling, I first marked all the vertices as belonging to the original mesh. While I was iterating through them, I also calculated new positions for each existing vertex by using a weighted average of neighbor positions and the current vertex position. I then iterated through the edges, storing them in a list of old edges while computing new positions for the vertices that would split those edges. After that, I iterated through all of the old edges again and split each of them. Then for every edge that was both new, and a connection between an old and new vertex, I flipped it. Finally, I copied over all the new positions of the vertices into the position variable used for rendering. I set breakpoints for debugging, which helped figure out which stages of the process were failing.</p>
+
+<p>Edges and corners become smoothed out due to upsampling. (Really sharp corners sometimes persist as bumps, as we will see with the cube mesh.) The torus mesh is a good example of the smoothing:</p>
+<div>
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="images/part6/torus_0.png" align="middle" width="400px"/>
+        <figcaption align="middle">Torus with no upsampling.</figcaption>
+      </td>
+      <td>
+        <img src="images/part6/torus_1.png" align="middle" width="400px"/>
+        <figcaption align="middle">Upsample level = 1.</figcaption>
+      </td>
+    </tr>
+    <br>
+    <tr>
+      <td>
+        <img src="images/part6/torus_2.png" align="middle" width="400px"/>
+        <figcaption align="middle">Upsample level = 2.</figcaption>
+      </td>
+      <td>
+        <img src="images/part6/torus_3.png" align="middle" width="400px"/>
+        <figcaption align="middle">Upsample level = 3.</figcaption>
+      </td>
+    </tr>
+    <br>
+    <tr>
+      <td>
+        <img src="images/part6/torus_4.png" align="middle" width="400px"/>
+        <figcaption align="middle">Upsample level = 4.</figcaption>
+      </td>
+      <td>
+        <img src="images/part6/torus_5.png" align="middle" width="400px"/>
+        <figcaption align="middle">Upsample level = 5.</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<p>The cow mesh also has a nice smoothing effect (and it's a cute cow).</p>
+<div>
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="images/part6/cow_0.png" align="middle" width="400px"/>
+        <figcaption align="middle">A nice cow with no upsampling.</figcaption>
+      </td>
+      <td>
+        <img src="images/part6/cow_1.png" align="middle" width="400px"/>
+        <figcaption align="middle">Upsample level = 1.</figcaption>
+      </td>
+    </tr>
+    <br>
+    <tr>
+      <td>
+        <img src="images/part6/cow_2.png" align="middle" width="400px"/>
+        <figcaption align="middle">Upsample level = 2.</figcaption>
+      </td>
+      <td>
+        <img src="images/part6/cow_3.png" align="middle" width="400px"/>
+        <figcaption align="middle">Upsample level = 3.</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<p>Upsampling splits existing triangles and repositions vertices. When a vertex is part of many triangles which will be split, it may be part of a corner that will persist in the upsampled versions of the mesh as an annoying bump. For example, the cube mesh normally looks like this at subsequent levels of upsampling:</p>
+<div>
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="images/part6/cube_0.png" align="middle" width="400px"/>
+        <figcaption align="middle">Cube with no upsampling.</figcaption>
+      </td>
+      <td>
+        <img src="images/part6/cube_1.png" align="middle" width="400px"/>
+        <figcaption align="middle">Upsample level = 1.</figcaption>
+      </td>
+    </tr>
+    <br>
+    <tr>
+      <td>
+        <img src="images/part6/cube_2.png" align="middle" width="400px"/>
+        <figcaption align="middle">Upsample level = 2.</figcaption>
+      </td>
+      <td>
+        <img src="images/part6/cube_3.png" align="middle" width="400px"/>
+        <figcaption align="middle">Upsample level = 3.</figcaption>
+      </td>
+    </tr>
+    <br>
+    <tr>
+      <td>
+        <img src="images/part6/cube_4.png" align="middle" width="400px"/>
+        <figcaption align="middle">Upsample level = 4.</figcaption>
+      </td>
+      <td>
+        <img src="images/part6/cube_5.png" align="middle" width="400px"/>
+        <figcaption align="middle">Upsample level = 5.</figcaption>
+      </td>
+    </tr>
+    <br>
+    <tr>
+      <td>
+        <img src="images/part6/cube_6.png" align="middle" width="400px"/>
+        <figcaption align="middle">Upsample level = 7.</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<p>We can fix this by pre-spitting the faces so that the upsampling maintains symmetry across faces. This way, two corners of a face don't stick out as in the previous example.</p>
+<div>
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="images/part6/cube_sym_0.png" align="middle" width="400px"/>
+        <figcaption align="middle">Cube with no upsampling, pre-split faces.</figcaption>
+      </td>
+      <td>
+        <img src="images/part6/cube_sym_1.png" align="middle" width="400px"/>
+        <figcaption align="middle">Upsample level = 1.</figcaption>
+      </td>
+    </tr>
+    <br>
+    <tr>
+      <td>
+        <img src="images/part6/cube_sym_2.png" align="middle" width="400px"/>
+        <figcaption align="middle">Upsample level = 2.</figcaption>
+      </td>
+      <td>
+        <img src="images/part6/cube_sym_3.png" align="middle" width="400px"/>
+        <figcaption align="middle">Upsample level = 3.</figcaption>
+      </td>
+    </tr>
+    <br>
+    <tr>
+      <td>
+        <img src="images/part6/cube_sym_4.png" align="middle" width="400px"/>
+        <figcaption align="middle">Upsample level = 4.</figcaption>
+      </td>
+      <td>
+        <img src="images/part6/cube_sym_5.png" align="middle" width="400px"/>
+        <figcaption align="middle">Upsample level = 5.</figcaption>
+      </td>
+    </tr>
+    <br>
+    <tr>
+      <td>
+        <img src="images/part6/cube_sym_6.png" align="middle" width="400px"/>
+        <figcaption align="middle">Upsample level = 7.</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+
+</body>
+</html>

@@ -15,7 +15,7 @@
     font-family: 'Source Sans Pro', sans-serif;
   }
 </style>
-<title>CS 184 Mesh Editor</title>
+<title>CS 184 Final Project Proposal</title>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <link href="https://fonts.googleapis.com/css?family=Open+Sans|Source+Sans+Pro" rel="stylesheet">
 </head>
@@ -25,7 +25,7 @@
 
 <h1 align="middle">CS 184: Computer Graphics and Imaging, Spring 2019</h1>
 <h1 align="middle">Final Project Proposal: Fluid Simulation with Varying Density</h1>
-<h2 align="middle">Team: Ruta Joshi, Jacqueline Forsberg, Eric D'Sa</h2>
+<h2 align="middle">Team: Ruta Joshi (26122656), Jacqueline Forsberg (26814270), Eric D’Sa (26127496)</h2>
 
 <br><br>
 
@@ -48,6 +48,7 @@
 <b><u>What we Plan to Deliver</u></b>
 <p>Our end goal with this project will be to successfully implement the Nvidia research paper on water simulation by Macklin and Muller, but to add a density control that would allow us to demonstrate different types of fluids, ranging from water vapor (gases) to lava (the most dense liquid we could think of).
 We will aim to create GIFs of simulated fluids of different densities to demonstrate the differences in simulation due to the fluid density. We will also aim to color the particles in the simulation using a height-based gradient. We expect to get an A given successful implementation of these goals.
+We believe we can achieve this because it will be an extension of project 4 to 3 dimensions, which means that we have the necessary tools and resources to get started easily. We also have learned enough about physical simulation in lecture to implement the paper's equations effectively.
 </p>
 
 <b><u>What we Hope to Deliver (Stretch Goals)</u></b>
@@ -59,7 +60,7 @@ We will aim to create GIFs of simulated fluids of different densities to demonst
 </p>
 
 <b><u>Metrics for Quality</u></b>
-<p>We will measure the quality of the simulation by comparing it to the baselines in videos of moving fluids and to output images in the Nvidia research paper. </p>
+<p>We will measure the quality of the simulation by comparing it to the baselines in videos of moving fluids and to output images in the Nvidia research paper. We may also run our fluids through a similar simulator implemented in C that we found in open source to compare the outcomes.</p>
 
 <b><u>Analysis Questions</u></b>
 <p>In our analysis, we plan to answer the following questions:<p>
@@ -89,13 +90,13 @@ We will aim to create GIFs of simulated fluids of different densities to demonst
 For reference, we will be using the following resources:<br>
 <ul>
   <li>
-    http://mmacklin.com/pbf_sig_preprint.pdf
+    http://mmacklin.com/pbf_sig_preprint.pdf: This is the Nvidia research paper we plan to implement.
   </li>
   <li>
-    http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.157.909&rep=rep1&type=pdf
+    http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.157.909&rep=rep1&type=pdf: This is another paper on fluid simulation that uses different techniques for surface rendering, which we may find useful for the stretch goals portion of our project.
   </li>
   <li>
-    http://users.encs.concordia.ca/~grogono/Graphics/fluid-5.pdf
+    http://users.encs.concordia.ca/~grogono/Graphics/fluid-5.pdf: This is a tutorial on fluid simulation with particle based methods.
   </li>
   <li>
     https://github.com/DeveloperLee/pcisph: Implementation of Screen Space Fluid Rendering with Curvature Flow which we can use as a comparison to our results

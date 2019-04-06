@@ -24,10 +24,75 @@
 <body>
 
 <h1 align="middle">CS 184: Computer Graphics and Imaging, Spring 2019</h1>
-<h1 align="middle">Project 2: Mesh Editor</h1>
-<h2 align="middle">Ruta Joshi</h2>
+<h1 align="middle">Final Project Proposal: Fluid Simulation with Varying Density</h1>
+<h2 align="middle">Team: Ruta Joshi, Jacqueline Forsberg, Eric D'Sa</h2>
 
+<br><br>
 
+<div>
+
+<h2 align="middle">Summary</h2>
+<p>We plan to simulate fluids in a 3D space. By changing the density of the fluid, we hope to see different physical dispersions of the liquid.</p>
+
+<h2 align="middle">Problem Description</h2>
+<p>Fluid simulation is a special case of physical simulation. By extending the 2D lattice structure from project 4 to 3D, we can simulate interactions of particles in 3 dimensions.
+</p>
+<p>This is challenging because we are representing a fluid as an infinite number of particles. We would need to find the minimum number of particles needed for a realistic representation.  The constraints for each particle are non-linear and include components of the n neighbors of each particle. This makes it hard to solve the equations via linear methods and may cause instability in our solution if momentum is not conserved.
+</p>
+<p>3D fluid simulation is cool! Animation of fluids is common in video games and animated movies. We think it’s important for simulating natural disasters (tsunamis & floods)  and other places as water/fluids are omnipresent.
+</p>
+<p>We plan to implement this by modeling a fluid as a lot of particles. Then, we apply forces to each particle at every stage in a loop. As these particles move, they exert forces on each other, causing the movement of the entire fluid. We adjust the density of these particles to affect how quickly the fluid moves.
+</p>
+
+<h2 align="middle">Goals and Deliverables</h2>
+<p>Our end goal with this project will be to successfully implement the Nvidia research paper on water simulation by Macklin and Muller, but to add a density control that would allow us to demonstrate different types of fluids, ranging from water vapor (gases) to lava (the most dense liquid we could think of).
+We will aim to create GIFs of simulated fluids of different densities to demonstrate the differences in simulation due to the fluid density.
+</p>
+
+<h5>Stretch Goals</h5>
+<p>
+  <ul>
+    <li>Interactive Slider bar to change the density of the fluid while it is being simulated </li>
+    <li>Use path tracing to render the fluid surface using ellipsoid splatting (as done in the Nvidia paper). </li>
+  </ul>
+</p>
+
+<p>We will measure the quality of the simulation by comparing it to the baselines in videos of moving fluids and to output images in the Nvidia research paper. </p>
+
+<p>In our analysis, we plan to answer the following questions:<p>
+<p>
+  <ul>
+    <li>How can the particle model of physical simulation be applied to simulating 3D surfaces ie. fluids?</li>
+    <li>How can we efficiently search for neighboring particles to display realistic particle motion in real-time?</li>
+    <li>How can we efficiently render a fluid surface using path tracing or ellipsoid splatting? (stretch)</li>
+  </ul>
+</p>
+
+<h2 align="middle">Schedule</h2>
+<p>Here we detail deadlines for ourselves:</p>
+<p>
+    4/16 → Implementation of at least half of the algorithm in the paper
+    	Particles, forces on particles, collision detection and response, position and velocity updates
+    4/23 → Full implementation of the Nvidia algorithm for fluid simulation
+    	Incompressability, Tensile instability, Viscosity
+    4/30 → Density controls to simulate different density fluids. [Graded milestone: video and webpage]
+    	Density slider, re-running simulation with different density
+    5/7 → Full implementation of path tracing or gradient colorization of the particles.
+    5/14 → Final deliverables (video and webpage)
+</p>
+
+<h2 align="middle">Resources</h2>
+<p>
+For reference, we will be using the following resources:
+http://mmacklin.com/pbf_sig_preprint.pdf
+http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.157.909&rep=rep1&type=pdf
+http://users.encs.concordia.ca/~grogono/Graphics/fluid-5.pdf
+https://github.com/DeveloperLee/pcisph
+Implementation of Screen Space Fluid Rendering with Curvature Flow which we can use as a comparison to our results
+Computing Platform:
+	Hardware Resources: Hive Machines and Personal Laptops
+	Software Resources: Stack Overflow, External Packages
+</p>
 
 </body>
 </html>

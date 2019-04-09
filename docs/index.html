@@ -32,30 +32,33 @@
 <div>
 
 <h2 align="middle">Summary</h2>
-<p>We plan to simulate fluids in a 3D space. By changing the density of the fluid, we hope to see different physical dispersions of the liquid.</p>
+<p>We plan to simulate fluids in a 3D space. By changing the density of the fluid, we hope to see different physical dispersions of the liquid. Alternatively, should this prove more difficult than expected, we will use an open source fluid simulator and focus on changing the fluid properties, such as density and viscosity.</p>
 
 <h2 align="middle">Problem Description</h2>
 <p>Fluid simulation is a special case of physical simulation. By extending the 2D lattice structure from project 4 to 3D, we can simulate interactions of particles in 3 dimensions.
 </p>
 <p>This is challenging because we are representing a fluid as an infinite number of particles. We would need to find the minimum number of particles needed for a realistic representation.  The constraints for each particle are non-linear and include components of the n neighbors of each particle. This makes it hard to solve the equations via linear methods and may cause instability in our solution if momentum is not conserved.
 </p>
-<p>3D fluid simulation is cool! Animation of fluids is common in video games and animated movies. We think it’s important for simulating natural disasters (tsunamis & floods)  and other places as water/fluids are omnipresent.
+<p>3D fluid simulation is cool! Animation of fluids is common in video games and animated movies. We think it’s important for simulating natural disasters (tsunamis & floods), and fluid simulation appears in other places as water/fluids are omnipresent.
 </p>
 <p>We plan to implement this by modeling a fluid as a lot of particles. Then, we apply forces to each particle at every stage in a loop. As these particles move, they exert forces on each other, causing the movement of the entire fluid. We adjust the density of these particles to affect how quickly the fluid moves.
 </p>
 
 <h2 align="middle">Goals and Deliverables</h2>
 <b><u>What we Plan to Deliver</u></b>
-<p>Our end goal with this project will be to successfully implement the Nvidia research paper on water simulation by Macklin and Muller, but to add a density control that would allow us to demonstrate different types of fluids, ranging from water vapor (gases) to lava (the most dense liquid we could think of).
-We will aim to create GIFs of simulated fluids of different densities to demonstrate the differences in simulation due to the fluid density. We will also aim to color the particles in the simulation using a height-based gradient. We expect to get an A given successful implementation of these goals.
+<p>Our end goal will be to successfully implement the Nvidia research paper on water simulation by Macklin and Muller, with the particles colored using a height map gradient. As a backup plan, should this prove to be more difficult than we expect, we will pull an open source fluid simulation
+and focus on adding bells and whistles, such as path tracing, density controls, and other things. We expect to get an A given either a successful implementation of the Nvidia paper or a successful implementation of bells and whistles added to an open source fluid simulation. </p>
+<p>Should we succeed in implementing the Nvidia research paper on water simulation by Macklin and Muller, we plan to add a density control that would allow us to demonstrate different types of fluids, ranging from water vapor (gases) to lava (the most dense liquid we could think of).
+We will aim to create GIFs of simulated fluids of different densities to demonstrate the differences in simulation due to the fluid density. We will also aim to color the particles in the simulation using a height-based gradient.
 We believe we can achieve this because it will be an extension of project 4 to 3 dimensions, which means that we have the necessary tools and resources to get started easily. We also have learned enough about physical simulation in lecture to implement the paper's equations effectively.
+However, if this proves time consuming, we have the knowledge from class to implement path tracing and density controls on an existing fluid simulation.
 </p>
 
 <b><u>What we Hope to Deliver (Stretch Goals)</u></b>
 <p>
   <ul>
-    <li>Interactive Slider bar to change the density of the fluid while it is being simulated </li>
-    <li>Use path tracing to render the fluid surface using ellipsoid splatting (as done in the Nvidia paper). </li>
+    <li>Interactive Slider bar to change the density of the fluid while it is being simulated in realtime. </li>
+    <li>Use path tracing to render the fluid surface, perhaps using ellipsoid splatting (as done in the Nvidia paper), or using techniques from project 3. </li>
   </ul>
 </p>
 
@@ -68,7 +71,7 @@ We believe we can achieve this because it will be an extension of project 4 to 3
   <ul>
     <li>How can the particle model of physical simulation be applied to simulating 3D surfaces ie. fluids?</li>
     <li>How can we efficiently search for neighboring particles to display realistic particle motion in real-time?</li>
-    <li>How can we efficiently render a fluid surface using path tracing or ellipsoid splatting? (stretch)</li>
+    <li>How can we efficiently render a fluid surface using path tracing/ellipsoid splatting? (stretch)</li>
   </ul>
 </p>
 
@@ -76,11 +79,11 @@ We believe we can achieve this because it will be an extension of project 4 to 3
 <p>Here we detail deadlines for ourselves:</p>
 <dl>
     <dt>4/16 → Implementation of at least half of the algorithm in the paper</dt>
-    	<dd>Particles, forces on particles, collision detection and response, position and velocity updates </dd>
+    	<dd>Particles, forces on particles, collision detection and response, position and velocity updates. </dd>
     <dt>4/23 → Full implementation of the Nvidia algorithm for fluid simulation</dt>
     	<dd>Incompressability, Tensile instability, Viscosity </dd>
     <dt>4/30 → Density controls to simulate different density fluids. [Graded milestone: video and webpage]</dt>
-    	<dd>Density slider, re-running simulation with different density<dd>
+    	<dd>Density slider, re-running simulation with different densities.<dd>
     <dt>5/7 → Full implementation of path tracing or gradient colorization of the particles.</dt>
 	<dt>5/14 → Final deliverables (video and webpage)</dt>
 </dl>
